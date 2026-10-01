@@ -1,0 +1,6 @@
+@asp_veterinaria_HostAddress = http://localhost:5042
+
+GET {{asp_veterinaria_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
