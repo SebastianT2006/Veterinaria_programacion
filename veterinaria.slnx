@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="asp_veterinaria/asp_veterinaria.csproj" Id="a2b1c8f3-7d4e-4f9a-b5c6-1e8f9d0a2b3c" />
+  <Project Path="csl_presentacion/csl_presentacion.csproj" />
+  <Project Path="lib_aplicaciones/lib_aplicaciones.csproj" />
+  <Project Path="mst_presentacion/mst_presentacion.csproj" />
+</Solution>
