@@ -1,5 +1,6 @@
 using lib_aplicaciones.entidades;
 using lib_aplicaciones.interfaces;
+using lib_aplicaciones.nucleo;
 using Microsoft.EntityFrameworkCore;
 namespace lib_aplicaciones.implementaciones;
 
@@ -14,8 +15,7 @@ public class veterinariosAplicacion : IveterinariosAplicacion
     {
         if (entidad.Id == 0)
             throw new Exception("No se ha guardado");
-        if (Validar(entidad))
-            throw new Exception("Falta información");
+        Validar(entidad);
         var entry = conexion.Entry<veterinarios>(entidad);
         entry.State = EntityState.Modified;
         conexion.SaveChanges();
@@ -31,25 +31,41 @@ public class veterinariosAplicacion : IveterinariosAplicacion
     }
     public List<veterinarios> Buscar(veterinarios entidad)
     {
-        var lista = Consultar();
-        if (string.IsNullOrWhiteSpace(entidad.Especialidad)
-            && string.IsNullOrWhiteSpace(entidad.RegistroProfesional)
-            && string.IsNullOrWhiteSpace(entidad.Estado)
-            && string.IsNullOrWhiteSpace(entidad.TelefonoLaboral))
-            return lista;
+        // El cuadro de busqueda de la pagina envia su texto en Especialidad: se usa como palabra clave
+        var palabra = entidad.Especialidad;
+        if (string.IsNullOrWhiteSpace(palabra))
+            return Consultar();
 
-        return lista.Where(x => (!string.IsNullOrWhiteSpace(entidad.Especialidad) && x.Especialidad != null && x.Especialidad.Contains(entidad.Especialidad!)) || (!string.IsNullOrWhiteSpace(entidad.RegistroProfesional) && x.RegistroProfesional != null && x.RegistroProfesional.Contains(entidad.RegistroProfesional!)) || (!string.IsNullOrWhiteSpace(entidad.Estado) && x.Estado != null && x.Estado.Contains(entidad.Estado!)) || (!string.IsNullOrWhiteSpace(entidad.TelefonoLaboral) && x.TelefonoLaboral != null && x.TelefonoLaboral.Contains(entidad.TelefonoLaboral!))).Take(100).ToList();
+        return conexion.veterinarios!
+            .Where(x => x.Especialidad!.Contains(palabra) || x.Estado!.Contains(palabra))
+            .Take(100)
+            .ToList();
     }
     public List<veterinarios> Consultar() => conexion.veterinarios!.Take(100).ToList();
     public veterinarios Insert(veterinarios entidad)
     {
         if (entidad.Id != 0)
             throw new Exception("Ya se guardó");
-        if (Validar(entidad))
-            throw new Exception("Falta información");
+        Validar(entidad);
         conexion.veterinarios!.Add(entidad);
         conexion.SaveChanges();
         return entidad;
     }
-    private bool Validar(veterinarios entidad) => string.IsNullOrEmpty(entidad.Especialidad) || string.IsNullOrEmpty(entidad.RegistroProfesional) || string.IsNullOrEmpty(entidad.Estado) || string.IsNullOrEmpty(entidad.TelefonoLaboral);
+    private void Validar(veterinarios entidad)
+    {
+        if (string.IsNullOrWhiteSpace(entidad.Especialidad))
+            throw new ValidacionException("El campo especialidad es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.RegistroProfesional))
+            throw new ValidacionException("El campo registro profesional es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.Estado))
+            throw new ValidacionException("El campo estado es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.TelefonoLaboral))
+            throw new ValidacionException("El campo teléfono laboral es obligatorio");
+        if (entidad.FechaIngreso < new DateTime(1900, 1, 1) || entidad.FechaIngreso > new DateTime(2079, 6, 6))
+            throw new ValidacionException("La fecha de ingreso no es válida");
+        if (!conexion.personas!.Any(x => x.Id == entidad.Persona))
+            throw new ValidacionException("La persona seleccionada no existe");
+        if (conexion.veterinarios!.Any(x => x.Persona == entidad.Persona && x.Id != entidad.Id))
+            throw new ValidacionException("Esta persona ya está registrada como veterinario");
+    }
 }
