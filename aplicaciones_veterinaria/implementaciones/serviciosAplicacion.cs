@@ -1,5 +1,6 @@
 using lib_aplicaciones.entidades;
 using lib_aplicaciones.interfaces;
+using lib_aplicaciones.nucleo;
 using Microsoft.EntityFrameworkCore;
 namespace lib_aplicaciones.implementaciones;
 
@@ -14,8 +15,7 @@ public class serviciosAplicacion : IserviciosAplicacion
     {
         if (entidad.Id == 0)
             throw new Exception("No se ha guardado");
-        if (Validar(entidad))
-            throw new Exception("Falta información");
+        Validar(entidad);
         var entry = conexion.Entry<servicios>(entidad);
         entry.State = EntityState.Modified;
         conexion.SaveChanges();
@@ -31,24 +31,37 @@ public class serviciosAplicacion : IserviciosAplicacion
     }
     public List<servicios> Buscar(servicios entidad)
     {
-        var lista = Consultar();
-        if (string.IsNullOrWhiteSpace(entidad.Nombre)
-            && string.IsNullOrWhiteSpace(entidad.Descripcion)
-            && string.IsNullOrWhiteSpace(entidad.Categoria))
-            return lista;
+        // El cuadro de busqueda de la pagina envia su texto en Nombre: se usa como palabra clave
+        var palabra = entidad.Nombre;
+        if (string.IsNullOrWhiteSpace(palabra))
+            return Consultar();
 
-        return lista.Where(x => (!string.IsNullOrWhiteSpace(entidad.Nombre) && x.Nombre != null && x.Nombre.Contains(entidad.Nombre!)) || (!string.IsNullOrWhiteSpace(entidad.Descripcion) && x.Descripcion != null && x.Descripcion.Contains(entidad.Descripcion!)) || (!string.IsNullOrWhiteSpace(entidad.Categoria) && x.Categoria != null && x.Categoria.Contains(entidad.Categoria!))).Take(100).ToList();
+        return conexion.servicios!
+            .Where(x => x.Nombre!.Contains(palabra) || x.Categoria!.Contains(palabra))
+            .Take(100)
+            .ToList();
     }
     public List<servicios> Consultar() => conexion.servicios!.Take(100).ToList();
     public servicios Insert(servicios entidad)
     {
         if (entidad.Id != 0)
             throw new Exception("Ya se guardó");
-        if (Validar(entidad))
-            throw new Exception("Falta información");
+        Validar(entidad);
         conexion.servicios!.Add(entidad);
         conexion.SaveChanges();
         return entidad;
     }
-    private bool Validar(servicios entidad) => string.IsNullOrEmpty(entidad.Nombre) || string.IsNullOrEmpty(entidad.Descripcion) || string.IsNullOrEmpty(entidad.Categoria);
+    private void Validar(servicios entidad)
+    {
+        if (string.IsNullOrWhiteSpace(entidad.Nombre))
+            throw new ValidacionException("El campo nombre es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.Descripcion))
+            throw new ValidacionException("El campo descripción es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.Categoria))
+            throw new ValidacionException("El campo categoría es obligatorio");
+        if (entidad.Precio < 0)
+            throw new ValidacionException("El campo precio no puede ser negativo");
+        if (entidad.Duracion <= 0)
+            throw new ValidacionException("El campo duración debe ser mayor que cero");
+    }
 }
