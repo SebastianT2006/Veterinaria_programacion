@@ -10,9 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\aplicaciones_veterinaria\aplicaciones_veterinaria.csproj" />
-    <ProjectReference Include="..\front_veterinaria\front_veterinaria.csproj" />
-    <ProjectReference Include="..\presentaciones_veterinaria\presentaciones_veterinaria.csproj" />
-    <ProjectReference Include="..\servicio_veterinaria\servicio_veterinaria.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
