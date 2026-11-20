@@ -1,5 +1,6 @@
 using lib_aplicaciones.entidades;
 using lib_aplicaciones.interfaces;
+using lib_aplicaciones.nucleo;
 using Microsoft.EntityFrameworkCore;
 namespace lib_aplicaciones.implementaciones;
 
@@ -14,8 +15,7 @@ public class comprasAplicacion : IcomprasAplicacion
     {
         if (entidad.Id == 0)
             throw new Exception("No se ha guardado");
-        if (Validar(entidad))
-            throw new Exception("Falta información");
+        Validar(entidad);
         var entry = conexion.Entry<compras>(entidad);
         entry.State = EntityState.Modified;
         conexion.SaveChanges();
@@ -31,24 +31,37 @@ public class comprasAplicacion : IcomprasAplicacion
     }
     public List<compras> Buscar(compras entidad)
     {
-        var lista = Consultar();
-        if (string.IsNullOrWhiteSpace(entidad.NumeroFactura)
-            && string.IsNullOrWhiteSpace(entidad.Estado)
-            && string.IsNullOrWhiteSpace(entidad.Observaciones))
-            return lista;
+        // El cuadro de busqueda de la pagina envia su texto en NumeroFactura: se usa como palabra clave
+        var palabra = entidad.NumeroFactura;
+        if (string.IsNullOrWhiteSpace(palabra))
+            return Consultar();
 
-        return lista.Where(x => (!string.IsNullOrWhiteSpace(entidad.NumeroFactura) && x.NumeroFactura != null && x.NumeroFactura.Contains(entidad.NumeroFactura!)) || (!string.IsNullOrWhiteSpace(entidad.Estado) && x.Estado != null && x.Estado.Contains(entidad.Estado!)) || (!string.IsNullOrWhiteSpace(entidad.Observaciones) && x.Observaciones != null && x.Observaciones.Contains(entidad.Observaciones!))).Take(100).ToList();
+        return conexion.compras!
+            .Where(x => x.NumeroFactura!.Contains(palabra) || x.Estado!.Contains(palabra))
+            .Take(100)
+            .ToList();
     }
     public List<compras> Consultar() => conexion.compras!.Take(100).ToList();
     public compras Insert(compras entidad)
     {
         if (entidad.Id != 0)
             throw new Exception("Ya se guardó");
-        if (Validar(entidad))
-            throw new Exception("Falta información");
+        Validar(entidad);
         conexion.compras!.Add(entidad);
         conexion.SaveChanges();
         return entidad;
     }
-    private bool Validar(compras entidad) => string.IsNullOrEmpty(entidad.NumeroFactura) || string.IsNullOrEmpty(entidad.Estado);
+    private void Validar(compras entidad)
+    {
+        if (string.IsNullOrWhiteSpace(entidad.NumeroFactura))
+            throw new ValidacionException("El campo número de factura es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.Estado))
+            throw new ValidacionException("El campo estado es obligatorio");
+        if (entidad.Fecha < new DateTime(1900, 1, 1) || entidad.Fecha > new DateTime(2079, 6, 6))
+            throw new ValidacionException("La fecha no es válida");
+        if (entidad.Total < 0)
+            throw new ValidacionException("El campo total no puede ser negativo");
+        if (!conexion.proveedores!.Any(x => x.Id == entidad.Proveedor))
+            throw new ValidacionException("El proveedor seleccionado no existe");
+    }
 }
