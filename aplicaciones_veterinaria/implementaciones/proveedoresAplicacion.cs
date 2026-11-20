@@ -1,5 +1,6 @@
 using lib_aplicaciones.entidades;
 using lib_aplicaciones.interfaces;
+using lib_aplicaciones.nucleo;
 using Microsoft.EntityFrameworkCore;
 namespace lib_aplicaciones.implementaciones;
 
@@ -14,8 +15,7 @@ public class proveedoresAplicacion : IproveedoresAplicacion
     {
         if (entidad.Id == 0)
             throw new Exception("No se ha guardado");
-        if (Validar(entidad))
-            throw new Exception("Falta información");
+        Validar(entidad);
         var entry = conexion.Entry<proveedores>(entidad);
         entry.State = EntityState.Modified;
         conexion.SaveChanges();
@@ -31,26 +31,37 @@ public class proveedoresAplicacion : IproveedoresAplicacion
     }
     public List<proveedores> Buscar(proveedores entidad)
     {
-        var lista = Consultar();
-        if (string.IsNullOrWhiteSpace(entidad.Nombre)
-            && string.IsNullOrWhiteSpace(entidad.Telefono)
-            && string.IsNullOrWhiteSpace(entidad.Email)
-            && string.IsNullOrWhiteSpace(entidad.Direccion)
-            && string.IsNullOrWhiteSpace(entidad.Nit))
-            return lista;
+        // El cuadro de busqueda de la pagina envia su texto en Nombre: se usa como palabra clave
+        var palabra = entidad.Nombre;
+        if (string.IsNullOrWhiteSpace(palabra))
+            return Consultar();
 
-        return lista.Where(x => (!string.IsNullOrWhiteSpace(entidad.Nombre) && x.Nombre != null && x.Nombre.Contains(entidad.Nombre!)) || (!string.IsNullOrWhiteSpace(entidad.Telefono) && x.Telefono != null && x.Telefono.Contains(entidad.Telefono!)) || (!string.IsNullOrWhiteSpace(entidad.Email) && x.Email != null && x.Email.Contains(entidad.Email!)) || (!string.IsNullOrWhiteSpace(entidad.Direccion) && x.Direccion != null && x.Direccion.Contains(entidad.Direccion!)) || (!string.IsNullOrWhiteSpace(entidad.Nit) && x.Nit != null && x.Nit.Contains(entidad.Nit!))).Take(100).ToList();
+        return conexion.proveedores!
+            .Where(x => x.Nombre!.Contains(palabra) || x.Nit!.Contains(palabra))
+            .Take(100)
+            .ToList();
     }
     public List<proveedores> Consultar() => conexion.proveedores!.Take(100).ToList();
     public proveedores Insert(proveedores entidad)
     {
         if (entidad.Id != 0)
             throw new Exception("Ya se guardó");
-        if (Validar(entidad))
-            throw new Exception("Falta información");
+        Validar(entidad);
         conexion.proveedores!.Add(entidad);
         conexion.SaveChanges();
         return entidad;
     }
-    private bool Validar(proveedores entidad) => string.IsNullOrEmpty(entidad.Nombre) || string.IsNullOrEmpty(entidad.Telefono) || string.IsNullOrEmpty(entidad.Email) || string.IsNullOrEmpty(entidad.Direccion) || string.IsNullOrEmpty(entidad.Nit);
+    private void Validar(proveedores entidad)
+    {
+        if (string.IsNullOrWhiteSpace(entidad.Nombre))
+            throw new ValidacionException("El campo nombre es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.Telefono))
+            throw new ValidacionException("El campo teléfono es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.Email))
+            throw new ValidacionException("El campo correo electrónico es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.Direccion))
+            throw new ValidacionException("El campo dirección es obligatorio");
+        if (string.IsNullOrWhiteSpace(entidad.Nit))
+            throw new ValidacionException("El campo NIT es obligatorio");
+    }
 }
