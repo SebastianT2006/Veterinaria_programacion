@@ -23,8 +23,8 @@
                     @{
                     var rol = Context.Session.GetString("Rol");
                     var usuarioActual = Context.Session.GetString("Usuario");
-                    var consultorio = new[] { "Personas", "Clientes", "Fincas", "Animales", "Especies", "Razas", "Citas", "Consultas", "HistoriasClinicas", "Vacunaciones", "Tratamientos" };
-                    var administracion = new[] { "Compras", "DetalleCompras", "DetalleFacturas", "Empleados", "Facturas", "Productos", "Proveedores", "Servicios", "Veterinarios", "Roles", "Usuarios", "Auditorias" };
+                    var consultorio = new[] { "Personas", "Clientes", "Fincas", "Animales", "Razas", "Citas", "Consultas", "HistoriasClinicas", "Vacunaciones", "Tratamientos" };
+                    var administracion = new[] { "Compras", "DetalleCompras", "DetalleFacturas", "Empleados", "Facturas", "Productos", "Proveedores", "Servicios", "Veterinarios", "Especies", "Roles", "Usuarios", "Auditorias" };
                     var ventanas = rol == "Administrador" ? consultorio.Concat(administracion).OrderBy(x => x).ToArray()
                         : rol == "Usuario" ? consultorio.OrderBy(x => x).ToArray()
                         : Array.Empty<string>();
@@ -49,6 +49,10 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["Aviso"] != null)
+            {
+                <div class="alert alert-warning text-center">@TempData["Aviso"]</div>
+            }
             @RenderBody()
         </main>
     </div>
