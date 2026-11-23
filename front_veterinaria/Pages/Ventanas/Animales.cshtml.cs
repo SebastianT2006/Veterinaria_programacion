@@ -2,6 +2,7 @@ using lib_aplicaciones.entidades;
 using lib_aplicaciones.nucleo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using front_veterinaria.Reportes;
 using presentaciones_veterinaria.interfaces;
 namespace front_veterinaria.Pages.Ventanas;
 
@@ -97,5 +98,21 @@ public class AnimalesModel : PageModel
         catch (Exception ex) { LogConversor.Log(ex, ViewData); }
         finally { OnPostBtConsultar(); }
     }
-}
 
+    // Boton PDF: exporta la lista tal como se ve (respeta la busqueda)
+    public IActionResult OnPostBtPdf()
+    {
+        OnPostBtConsultar();
+        var filas = Lista.Select(x => new[]
+        {
+            x.Nombre ?? "",
+            Razas.FirstOrDefault(r => r.Id == x.Raza)?.Nombre ?? "",
+            x.Sexo ?? "",
+            x.Color ?? "",
+            x.Peso.ToString(),
+            x.Estado ?? ""
+        }).ToList();
+        var columnas = new[] { "Nombre", "Raza", "Sexo", "Color", "Peso", "Estado" };
+        return File(ReportePdf.Generar("Animales", columnas, filas), "application/pdf", "Animales.pdf");
+    }
+}

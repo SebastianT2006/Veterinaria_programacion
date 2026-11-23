@@ -6,6 +6,7 @@
         <h1 class="display-4">Auditorías</h1>
         <div>
             <input type="submit" value="Consultar" class="btn btn-secondary" asp-page-handler="BtConsultar" />
+            <input type="submit" value="PDF" class="btn btn-secondary" asp-page-handler="BtPdf" />
             <input placeholder="Buscar" asp-for="Filtro!.Accion" />
         </div>
         @if (ViewData.ContainsKey("Mensaje"))
