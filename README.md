@@ -106,7 +106,6 @@ Para evitar errores, se deben crear primero los registros de los que dependen ot
 - **Usuarios y auditoría:** no se permite eliminar un usuario que ya tenga registros de auditoría; en ese caso se debe cambiar su estado a **Inactivo**.
 - **Cambio de contraseña:** al editar un usuario, si la contraseña se deja vacía se conserva la anterior; si se ingresa una nueva, se calcula su hash SHA-256.
 
-> **Nota:** las referencias entre registros se comprueban, pero no todas las reglas de coherencia entre relaciones están implementadas. Por ejemplo, que un animal pertenezca a una finca del mismo cliente, o que el animal y veterinario de una consulta coincidan con los de su cita, no debe darse por garantizado únicamente por las claves foráneas. Los datos se deben seleccionar coherentemente.
 
 ## Inicio de sesión, permisos y reportes
 
