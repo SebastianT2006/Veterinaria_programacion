@@ -1,0 +1,68 @@
+@page
+@model front_veterinaria.Pages.Ventanas.UsuariosModel
+@{ ViewData["Title"] = "Usuarios"; }
+<form method="post">
+    <div class="text-center">
+        <h1 class="display-4">Usuarios</h1>
+        <div>
+            <input type="submit" value="Consultar" class="btn btn-secondary" asp-page-handler="BtConsultar" />
+            <input type="submit" value="Nuevo" class="btn btn-secondary" asp-page-handler="BtNuevo" />
+            <input type="submit" value="Guardar" class="btn btn-secondary" asp-page-handler="BtGuardar" />
+            <input placeholder="Buscar" asp-for="Filtro!.NombreUsuario" />
+        </div>
+        @if (ViewData.ContainsKey("Mensaje"))
+        {
+            @await Html.PartialAsync("../Emergentes/Mensajes.cshtml")
+        }
+        @if (Model.Formulario || Model.Borrar)
+        {
+            <input type="hidden" asp-for="Actual!.Id" />
+        }
+        @if (Model.Formulario)
+        {
+            <div>
+                <h3>Usuarios</h3>
+                <label>Nombre de usuario</label><input class="form-control" asp-for="Actual!.NombreUsuario" type="text" /><br />
+                <label>Contraseña (si la deja vacía, no se cambia)</label><input class="form-control" asp-for="Actual!.Contrasena" type="password" /><br />
+                <label>Rol</label>
+                <select class="form-control" asp-for="Actual!.Rol" asp-items="@(new SelectList(Model.Roles, "Id", "Nombre"))"></select><br />
+                <label>Estado</label>
+                <select class="form-control" asp-for="Actual!.Estado">
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select><br />
+            </div>
+        }
+        @if (Model.Borrar)
+        {
+            <div class="popup">
+                <div class="pp_del_inner">
+                    <h3>Mensaje</h3>
+                    <h4>¿Quiere borrar el registro #@Model.Actual!.Id?</h4>
+                    <input type="submit" value="Cancelar" class="btn btn-secondary" asp-page-handler="BtConsultar" />
+                    <input type="submit" value="Borrar" class="btn btn-secondary" asp-page-handler="BtBorrar" />
+                </div>
+            </div>
+        }
+        @if (!Model.Formulario)
+        {
+            <div class="containers_vn panel panel-default">
+                <table class="tb_data table table-striped table-bordered table-hover">
+                    <tr><th>Usuario</th><th>Rol</th><th>Estado</th><th>Acción</th></tr>
+                    @foreach (var elemento in Model.Lista)
+                    {
+                        <tr>
+                            <td>@elemento.NombreUsuario</td>
+                            <td>@(Model.Roles.FirstOrDefault(r => r.Id == elemento.Rol)?.Nombre)</td>
+                            <td>@elemento.Estado</td>
+                            <td>
+                                <input type="submit" value="Editar" class="btn btn-secondary" asp-page-handler="BtEditar" asp-route-data="@elemento.Id" />
+                                <input type="submit" value="Borrar" class="btn btn-secondary" asp-page-handler="BtPregBorrar" asp-route-data="@elemento.Id" />
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        }
+    </div>
+</form>
