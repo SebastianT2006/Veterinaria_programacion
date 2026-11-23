@@ -24,7 +24,17 @@ builder.Services.AddScoped<IserviciosAplicacion, serviciosAplicacion>();
 builder.Services.AddScoped<ItratamientosAplicacion, tratamientosAplicacion>();
 builder.Services.AddScoped<IvacunacionesAplicacion, vacunacionesAplicacion>();
 builder.Services.AddScoped<IveterinariosAplicacion, veterinariosAplicacion>();
+builder.Services.AddScoped<IrolesAplicacion, rolesAplicacion>();
+builder.Services.AddScoped<IusuariosAplicacion, usuariosAplicacion>();
+builder.Services.AddScoped<IauditoriasAplicacion, auditoriasAplicacion>();
 var app = builder.Build();
+// La pagina envia en X-Usuario el id de quien esta conectado; se guarda para la auditoria
+app.Use(async (context, next) =>
+{
+    if (int.TryParse(context.Request.Headers["X-Usuario"], out var idUsuario))
+        context.RequestServices.GetRequiredService<IConexion>().UsuarioActual = idUsuario;
+    await next();
+});
 app.Use(async (context, next) =>
 {
     try
