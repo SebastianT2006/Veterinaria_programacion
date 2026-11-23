@@ -1,7 +1,12 @@
+using front_veterinaria.Seguridad;
 using presentaciones_veterinaria.implementaciones;
 using presentaciones_veterinaria.interfaces;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorPages();
+// FiltroSesion revisa en cada pagina que haya un usuario en la sesion
+builder.Services.AddRazorPages(opciones => opciones.Conventions.ConfigureFilter(new FiltroSesion()));
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(opciones => opciones.IdleTimeout = TimeSpan.FromMinutes(30));
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IComunicaciones, Comunicaciones>();
 builder.Services.AddScoped<IanimalesPresentacion, animalesPresentacion>();
@@ -24,10 +29,14 @@ builder.Services.AddScoped<IserviciosPresentacion, serviciosPresentacion>();
 builder.Services.AddScoped<ItratamientosPresentacion, tratamientosPresentacion>();
 builder.Services.AddScoped<IvacunacionesPresentacion, vacunacionesPresentacion>();
 builder.Services.AddScoped<IveterinariosPresentacion, veterinariosPresentacion>();
+builder.Services.AddScoped<IrolesPresentacion, rolesPresentacion>();
+builder.Services.AddScoped<IusuariosPresentacion, usuariosPresentacion>();
+builder.Services.AddScoped<IauditoriasPresentacion, auditoriasPresentacion>();
 var app = builder.Build();
 if (!app.Environment.IsDevelopment()) { app.UseExceptionHandler("/Error"); app.UseHsts(); }
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseSession();
 app.UseAuthorization();
 app.MapStaticAssets();
 app.MapRazorPages().WithStaticAssets();

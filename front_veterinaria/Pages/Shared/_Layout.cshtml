@@ -1,3 +1,4 @@
+@using Microsoft.AspNetCore.Http
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -19,37 +20,29 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" 
-                                asp-area="" 
-                               asp-page="/Index">Inicio</a>
-                        </li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Animales">Animales</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Citas">Citas</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Clientes">Clientes</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Compras">Compras</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Consultas">Consultas</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/DetalleCompras">DetalleCompras</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/DetalleFacturas">DetalleFacturas</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Empleados">Empleados</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Especies">Especies</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Facturas">Facturas</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Fincas">Fincas</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/HistoriasClinicas">HistoriasClinicas</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Personas">Personas</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Productos">Productos</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Proveedores">Proveedores</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Razas">Razas</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Servicios">Servicios</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Tratamientos">Tratamientos</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Vacunaciones">Vacunaciones</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-page="/Ventanas/Veterinarios">Veterinarios</a></li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" 
-                                asp-area="" asp-page="/Privacy">Privacidad</a>
-                        </li>
-                    </ul>
+                    @{
+                    var rol = Context.Session.GetString("Rol");
+                    var usuarioActual = Context.Session.GetString("Usuario");
+                    var consultorio = new[] { "Personas", "Clientes", "Fincas", "Animales", "Especies", "Razas", "Citas", "Consultas", "HistoriasClinicas", "Vacunaciones", "Tratamientos" };
+                    var administracion = new[] { "Compras", "DetalleCompras", "DetalleFacturas", "Empleados", "Facturas", "Productos", "Proveedores", "Servicios", "Veterinarios", "Roles", "Usuarios", "Auditorias" };
+                    var ventanas = rol == "Administrador" ? consultorio.Concat(administracion).OrderBy(x => x).ToArray()
+                        : rol == "Usuario" ? consultorio.OrderBy(x => x).ToArray()
+                        : Array.Empty<string>();
+                }
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-page="/Index">Inicio</a></li>
+                    @foreach (var ventana in ventanas)
+                    {
+                        var ruta = "/Ventanas/" + ventana;
+                        <li class="nav-item"><a class="nav-link text-dark" asp-page="@ruta">@ventana</a></li>
+                    }
+                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacidad</a></li>
+                    @if (!string.IsNullOrEmpty(usuarioActual))
+                    {
+                        <li class="nav-item ms-auto"><span class="navbar-text me-2">@usuarioActual (@rol)</span></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-page="/Salir">Salir</a></li>
+                    }
+                </ul>
                 </div>
             </div>
         </nav>
