@@ -8,6 +8,7 @@ namespace presentaciones_veterinaria.implementaciones;
 public class Comunicaciones : IComunicaciones
 {
     private readonly IHttpContextAccessor? accesor;
+    private readonly HttpMessageHandler? manejador;
 
     public Comunicaciones()
     {
@@ -19,10 +20,18 @@ public class Comunicaciones : IComunicaciones
         this.accesor = accesor;
     }
 
+    // Solo para las pruebas: permite entregar una respuesta falsa en vez de llamar a la API
+    public Comunicaciones(IHttpContextAccessor? accesor, HttpMessageHandler manejador)
+    {
+        this.accesor = accesor;
+        this.manejador = manejador;
+    }
+
     public async Task<T> Ejecutar<T>(string url, object? entidad)
     {
         var baseUrl = Environment.GetEnvironmentVariable("VETERINARIA_API_URL") ?? "http://localhost:5209/";
-        using var cliente = new HttpClient { Timeout = TimeSpan.FromMinutes(4) };
+        using var cliente = manejador == null ? new HttpClient() : new HttpClient(manejador, false);
+        cliente.Timeout = TimeSpan.FromMinutes(4);
         var idUsuario = accesor?.HttpContext?.Session.GetString("UsuarioId");
         if (!string.IsNullOrEmpty(idUsuario))
             cliente.DefaultRequestHeaders.Add("X-Usuario", idUsuario);
