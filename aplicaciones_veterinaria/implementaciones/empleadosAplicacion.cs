@@ -45,7 +45,7 @@ public class empleadosAplicacion : IempleadosAplicacion
     public empleados Insert(empleados entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.empleados!.Add(entidad);
         conexion.SaveChanges();
@@ -60,12 +60,12 @@ public class empleadosAplicacion : IempleadosAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Turno))
             throw new ValidacionException("El campo turno es obligatorio");
         if (entidad.FechaIngreso < new DateTime(1900, 1, 1) || entidad.FechaIngreso > new DateTime(2079, 6, 6))
-            throw new ValidacionException("La fecha de ingreso no es válida");
+            throw new ValidacionException("La fecha de ingreso no es valida");
         if (entidad.Salario < 0)
             throw new ValidacionException("El campo salario no puede ser negativo");
         if (!conexion.personas!.Any(x => x.Id == entidad.Persona))
             throw new ValidacionException("La persona seleccionada no existe");
         if (conexion.empleados!.Any(x => x.Persona == entidad.Persona && x.Id != entidad.Id))
-            throw new ValidacionException("Esta persona ya está registrada como empleado");
+            throw new ValidacionException("Esta persona ya esta registrada como empleado");
     }
 }

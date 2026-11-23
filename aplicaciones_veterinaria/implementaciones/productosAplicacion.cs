@@ -45,7 +45,7 @@ public class productosAplicacion : IproductosAplicacion
     public productos Insert(productos entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.productos!.Add(entidad);
         conexion.SaveChanges();
@@ -58,7 +58,7 @@ public class productosAplicacion : IproductosAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Tipo))
             throw new ValidacionException("El campo tipo es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Descripcion))
-            throw new ValidacionException("El campo descripción es obligatorio");
+            throw new ValidacionException("El campo descripcion es obligatorio");
         if (entidad.Precio < 0)
             throw new ValidacionException("El campo precio no puede ser negativo");
         if (entidad.Stock < 0)

@@ -38,7 +38,7 @@ public class detalleFacturasAplicacion : IdetalleFacturasAplicacion
     public detalleFacturas Insert(detalleFacturas entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.detalleFacturas!.Add(entidad);
         conexion.SaveChanges();

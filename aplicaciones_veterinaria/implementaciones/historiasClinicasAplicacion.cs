@@ -45,7 +45,7 @@ public class historiasClinicasAplicacion : IhistoriasClinicasAplicacion
     public historiasClinicas Insert(historiasClinicas entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.historiasClinicas!.Add(entidad);
         conexion.SaveChanges();
@@ -56,6 +56,6 @@ public class historiasClinicasAplicacion : IhistoriasClinicasAplicacion
         if (!conexion.animales!.Any(x => x.Id == entidad.Animal))
             throw new ValidacionException("El animal seleccionado no existe");
         if (conexion.historiasClinicas!.Any(x => x.Animal == entidad.Animal && x.Id != entidad.Id))
-            throw new ValidacionException("Este animal ya tiene una historia clínica");
+            throw new ValidacionException("Este animal ya tiene una historia clinica");
     }
 }

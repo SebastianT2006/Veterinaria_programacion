@@ -45,7 +45,7 @@ public class animalesAplicacion : IanimalesAplicacion
     public animales Insert(animales entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.animales!.Add(entidad);
         conexion.SaveChanges();
@@ -62,7 +62,7 @@ public class animalesAplicacion : IanimalesAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Estado))
             throw new ValidacionException("El estado es obligatorio");
         if (entidad.FechaNacimiento < new DateTime(1900, 1, 1) || entidad.FechaNacimiento > DateTime.Today)
-            throw new ValidacionException("La fecha de nacimiento no es válida");
+            throw new ValidacionException("La fecha de nacimiento no es valida");
         if (entidad.Peso <= 0)
             throw new ValidacionException("El peso debe ser mayor que cero");
         if (!conexion.razas!.Any(x => x.Id == entidad.Raza))

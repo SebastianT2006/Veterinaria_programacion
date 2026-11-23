@@ -45,7 +45,7 @@ public class especiesAplicacion : IespeciesAplicacion
     public especies Insert(especies entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.especies!.Add(entidad);
         conexion.SaveChanges();
@@ -56,6 +56,6 @@ public class especiesAplicacion : IespeciesAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Nombre))
             throw new ValidacionException("El campo nombre es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Descripcion))
-            throw new ValidacionException("El campo descripción es obligatorio");
+            throw new ValidacionException("El campo descripcion es obligatorio");
     }
 }

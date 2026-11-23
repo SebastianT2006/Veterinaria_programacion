@@ -45,7 +45,7 @@ public class consultasAplicacion : IconsultasAplicacion
     public consultas Insert(consultas entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.consultas!.Add(entidad);
         conexion.SaveChanges();
@@ -54,9 +54,9 @@ public class consultasAplicacion : IconsultasAplicacion
     private void Validar(consultas entidad)
     {
         if (string.IsNullOrWhiteSpace(entidad.Diagnostico))
-            throw new ValidacionException("El campo diagnóstico es obligatorio");
+            throw new ValidacionException("El campo diagnostico es obligatorio");
         if (entidad.Fecha < new DateTime(1900, 1, 1) || entidad.Fecha > new DateTime(2079, 6, 6))
-            throw new ValidacionException("La fecha no es válida");
+            throw new ValidacionException("La fecha no es valida");
         if (entidad.PesoActual <= 0)
             throw new ValidacionException("El campo peso actual debe ser mayor que cero");
         if (!conexion.citas!.Any(x => x.Id == entidad.Cita))

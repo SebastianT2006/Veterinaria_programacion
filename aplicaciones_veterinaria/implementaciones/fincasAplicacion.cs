@@ -45,7 +45,7 @@ public class fincasAplicacion : IfincasAplicacion
     public fincas Insert(fincas entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.fincas!.Add(entidad);
         conexion.SaveChanges();
@@ -56,13 +56,13 @@ public class fincasAplicacion : IfincasAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Nombre))
             throw new ValidacionException("El campo nombre es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Direccion))
-            throw new ValidacionException("El campo dirección es obligatorio");
+            throw new ValidacionException("El campo direccion es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.TipoProduccion))
-            throw new ValidacionException("El campo tipo de producción es obligatorio");
+            throw new ValidacionException("El campo tipo de produccion es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Estado))
             throw new ValidacionException("El campo estado es obligatorio");
         if (entidad.AreaHectareas <= 0)
-            throw new ValidacionException("El campo área en hectáreas debe ser mayor que cero");
+            throw new ValidacionException("El campo area en hectareas debe ser mayor que cero");
         if (!conexion.clientes!.Any(x => x.Id == entidad.Cliente))
             throw new ValidacionException("El cliente seleccionado no existe");
     }

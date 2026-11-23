@@ -38,7 +38,7 @@ public class detalleComprasAplicacion : IdetalleComprasAplicacion
     public detalleCompras Insert(detalleCompras entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.detalleCompras!.Add(entidad);
         conexion.SaveChanges();

@@ -45,7 +45,7 @@ public class clientesAplicacion : IclientesAplicacion
     public clientes Insert(clientes entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.clientes!.Add(entidad);
         conexion.SaveChanges();
@@ -60,10 +60,10 @@ public class clientesAplicacion : IclientesAplicacion
         if (string.IsNullOrWhiteSpace(entidad.PreferenciaContacto))
             throw new ValidacionException("El campo preferencia de contacto es obligatorio");
         if (entidad.FechaRegistro < new DateTime(1900, 1, 1) || entidad.FechaRegistro > new DateTime(2079, 6, 6))
-            throw new ValidacionException("La fecha de registro no es válida");
+            throw new ValidacionException("La fecha de registro no es valida");
         if (!conexion.personas!.Any(x => x.Id == entidad.Persona))
             throw new ValidacionException("La persona seleccionada no existe");
         if (conexion.clientes!.Any(x => x.Persona == entidad.Persona && x.Id != entidad.Id))
-            throw new ValidacionException("Esta persona ya está registrada como cliente");
+            throw new ValidacionException("Esta persona ya esta registrada como cliente");
     }
 }

@@ -45,7 +45,7 @@ public class vacunacionesAplicacion : IvacunacionesAplicacion
     public vacunaciones Insert(vacunaciones entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.vacunaciones!.Add(entidad);
         conexion.SaveChanges();
@@ -56,9 +56,9 @@ public class vacunacionesAplicacion : IvacunacionesAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Lote))
             throw new ValidacionException("El campo lote es obligatorio");
         if (entidad.Fecha < new DateTime(1900, 1, 1) || entidad.Fecha > new DateTime(2079, 6, 6))
-            throw new ValidacionException("La fecha no es válida");
+            throw new ValidacionException("La fecha no es valida");
         if (entidad.ProximaFecha < new DateTime(1900, 1, 1) || entidad.ProximaFecha > new DateTime(2079, 6, 6))
-            throw new ValidacionException("La próxima fecha no es válida");
+            throw new ValidacionException("La proxima fecha no es valida");
         if (entidad.Dosis <= 0)
             throw new ValidacionException("El campo dosis debe ser mayor que cero");
         if (!conexion.animales!.Any(x => x.Id == entidad.Animal))

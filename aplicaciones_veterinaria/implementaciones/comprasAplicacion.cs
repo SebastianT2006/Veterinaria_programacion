@@ -45,7 +45,7 @@ public class comprasAplicacion : IcomprasAplicacion
     public compras Insert(compras entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.compras!.Add(entidad);
         conexion.SaveChanges();
@@ -54,11 +54,11 @@ public class comprasAplicacion : IcomprasAplicacion
     private void Validar(compras entidad)
     {
         if (string.IsNullOrWhiteSpace(entidad.NumeroFactura))
-            throw new ValidacionException("El campo número de factura es obligatorio");
+            throw new ValidacionException("El campo numero de factura es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Estado))
             throw new ValidacionException("El campo estado es obligatorio");
         if (entidad.Fecha < new DateTime(1900, 1, 1) || entidad.Fecha > new DateTime(2079, 6, 6))
-            throw new ValidacionException("La fecha no es válida");
+            throw new ValidacionException("La fecha no es valida");
         if (entidad.Total < 0)
             throw new ValidacionException("El campo total no puede ser negativo");
         if (!conexion.proveedores!.Any(x => x.Id == entidad.Proveedor))

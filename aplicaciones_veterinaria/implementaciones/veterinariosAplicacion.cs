@@ -45,7 +45,7 @@ public class veterinariosAplicacion : IveterinariosAplicacion
     public veterinarios Insert(veterinarios entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.veterinarios!.Add(entidad);
         conexion.SaveChanges();
@@ -60,12 +60,12 @@ public class veterinariosAplicacion : IveterinariosAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Estado))
             throw new ValidacionException("El campo estado es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.TelefonoLaboral))
-            throw new ValidacionException("El campo teléfono laboral es obligatorio");
+            throw new ValidacionException("El campo telefono laboral es obligatorio");
         if (entidad.FechaIngreso < new DateTime(1900, 1, 1) || entidad.FechaIngreso > new DateTime(2079, 6, 6))
-            throw new ValidacionException("La fecha de ingreso no es válida");
+            throw new ValidacionException("La fecha de ingreso no es valida");
         if (!conexion.personas!.Any(x => x.Id == entidad.Persona))
             throw new ValidacionException("La persona seleccionada no existe");
         if (conexion.veterinarios!.Any(x => x.Persona == entidad.Persona && x.Id != entidad.Id))
-            throw new ValidacionException("Esta persona ya está registrada como veterinario");
+            throw new ValidacionException("Esta persona ya esta registrada como veterinario");
     }
 }

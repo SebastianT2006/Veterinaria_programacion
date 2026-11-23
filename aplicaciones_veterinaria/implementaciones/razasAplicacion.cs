@@ -45,7 +45,7 @@ public class razasAplicacion : IrazasAplicacion
     public razas Insert(razas entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.razas!.Add(entidad);
         conexion.SaveChanges();
@@ -56,13 +56,13 @@ public class razasAplicacion : IrazasAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Nombre))
             throw new ValidacionException("El campo nombre es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Descripcion))
-            throw new ValidacionException("El campo descripción es obligatorio");
+            throw new ValidacionException("El campo descripcion es obligatorio");
         if (entidad.TamanoPromedio <= 0)
-            throw new ValidacionException("El campo tamaño promedio debe ser mayor que cero");
+            throw new ValidacionException("El campo tamano promedio debe ser mayor que cero");
         if (entidad.PesoPromedio <= 0)
             throw new ValidacionException("El campo peso promedio debe ser mayor que cero");
         if (entidad.EsperanzaVidaAnios <= 0)
-            throw new ValidacionException("El campo esperanza de vida (años) debe ser mayor que cero");
+            throw new ValidacionException("El campo esperanza de vida (anios) debe ser mayor que cero");
         if (!conexion.especies!.Any(x => x.Id == entidad.Especie))
             throw new ValidacionException("La especie seleccionada no existe");
     }

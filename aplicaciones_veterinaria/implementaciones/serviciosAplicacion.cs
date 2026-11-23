@@ -45,7 +45,7 @@ public class serviciosAplicacion : IserviciosAplicacion
     public servicios Insert(servicios entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.servicios!.Add(entidad);
         conexion.SaveChanges();
@@ -56,12 +56,12 @@ public class serviciosAplicacion : IserviciosAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Nombre))
             throw new ValidacionException("El campo nombre es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Descripcion))
-            throw new ValidacionException("El campo descripción es obligatorio");
+            throw new ValidacionException("El campo descripcion es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Categoria))
-            throw new ValidacionException("El campo categoría es obligatorio");
+            throw new ValidacionException("El campo categoria es obligatorio");
         if (entidad.Precio < 0)
             throw new ValidacionException("El campo precio no puede ser negativo");
         if (entidad.Duracion <= 0)
-            throw new ValidacionException("El campo duración debe ser mayor que cero");
+            throw new ValidacionException("El campo duracion debe ser mayor que cero");
     }
 }

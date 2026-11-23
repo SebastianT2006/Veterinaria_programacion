@@ -45,7 +45,7 @@ public class tratamientosAplicacion : ItratamientosAplicacion
     public tratamientos Insert(tratamientos entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.tratamientos!.Add(entidad);
         conexion.SaveChanges();
@@ -58,11 +58,11 @@ public class tratamientosAplicacion : ItratamientosAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Indicaciones))
             throw new ValidacionException("El campo indicaciones es obligatorio");
         if (entidad.FechaInicio < new DateTime(1900, 1, 1) || entidad.FechaInicio > new DateTime(2079, 6, 6))
-            throw new ValidacionException("La fecha de inicio no es válida");
+            throw new ValidacionException("La fecha de inicio no es valida");
         if (entidad.Dosis <= 0)
             throw new ValidacionException("El campo dosis debe ser mayor que cero");
         if (entidad.Duracion <= 0)
-            throw new ValidacionException("El campo duración debe ser mayor que cero");
+            throw new ValidacionException("El campo duracion debe ser mayor que cero");
         if (!conexion.animales!.Any(x => x.Id == entidad.Animal))
             throw new ValidacionException("El animal seleccionado no existe");
         if (!conexion.consultas!.Any(x => x.Id == entidad.Consulta))

@@ -45,7 +45,7 @@ public class citasAplicacion : IcitasAplicacion
     public citas Insert(citas entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.citas!.Add(entidad);
         conexion.SaveChanges();
@@ -58,7 +58,7 @@ public class citasAplicacion : IcitasAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Estado))
             throw new ValidacionException("El campo estado es obligatorio");
         if (entidad.Fecha < new DateTime(1900, 1, 1) || entidad.Fecha > new DateTime(2079, 6, 6))
-            throw new ValidacionException("La fecha no es válida");
+            throw new ValidacionException("La fecha no es valida");
         if (!conexion.animales!.Any(x => x.Id == entidad.Animal))
             throw new ValidacionException("El animal seleccionado no existe");
         if (!conexion.veterinarios!.Any(x => x.Id == entidad.Veterinario))

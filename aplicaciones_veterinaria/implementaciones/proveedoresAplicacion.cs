@@ -45,7 +45,7 @@ public class proveedoresAplicacion : IproveedoresAplicacion
     public proveedores Insert(proveedores entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.proveedores!.Add(entidad);
         conexion.SaveChanges();
@@ -56,11 +56,11 @@ public class proveedoresAplicacion : IproveedoresAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Nombre))
             throw new ValidacionException("El campo nombre es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Telefono))
-            throw new ValidacionException("El campo teléfono es obligatorio");
+            throw new ValidacionException("El campo telefono es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Email))
-            throw new ValidacionException("El campo correo electrónico es obligatorio");
+            throw new ValidacionException("El campo correo electronico es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Direccion))
-            throw new ValidacionException("El campo dirección es obligatorio");
+            throw new ValidacionException("El campo direccion es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Nit))
             throw new ValidacionException("El campo NIT es obligatorio");
     }

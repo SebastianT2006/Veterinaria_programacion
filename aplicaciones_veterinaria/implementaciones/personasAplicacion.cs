@@ -45,7 +45,7 @@ public class personasAplicacion : IpersonasAplicacion
     public personas Insert(personas entidad)
     {
         if (entidad.Id != 0)
-            throw new Exception("Ya se guardó");
+            throw new Exception("Ya se guardo");
         Validar(entidad);
         conexion.personas!.Add(entidad);
         conexion.SaveChanges();
@@ -56,12 +56,12 @@ public class personasAplicacion : IpersonasAplicacion
         if (string.IsNullOrWhiteSpace(entidad.Nombre))
             throw new ValidacionException("El campo nombre es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Telefono))
-            throw new ValidacionException("El campo teléfono es obligatorio");
+            throw new ValidacionException("El campo telefono es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Email))
-            throw new ValidacionException("El campo correo electrónico es obligatorio");
+            throw new ValidacionException("El campo correo electronico es obligatorio");
         if (string.IsNullOrWhiteSpace(entidad.Direccion))
-            throw new ValidacionException("El campo dirección es obligatorio");
+            throw new ValidacionException("El campo direccion es obligatorio");
         if (entidad.FechaNacimiento < new DateTime(1900, 1, 1) || entidad.FechaNacimiento > DateTime.Today)
-            throw new ValidacionException("La fecha de nacimiento no es válida");
+            throw new ValidacionException("La fecha de nacimiento no es valida");
     }
 }
