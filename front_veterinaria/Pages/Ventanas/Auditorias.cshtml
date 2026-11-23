@@ -1,0 +1,32 @@
+@page
+@model front_veterinaria.Pages.Ventanas.AuditoriasModel
+@{ ViewData["Title"] = "Auditorías"; }
+<form method="post">
+    <div class="text-center">
+        <h1 class="display-4">Auditorías</h1>
+        <div>
+            <input type="submit" value="Consultar" class="btn btn-secondary" asp-page-handler="BtConsultar" />
+            <input placeholder="Buscar" asp-for="Filtro!.Accion" />
+        </div>
+        @if (ViewData.ContainsKey("Mensaje"))
+        {
+            @await Html.PartialAsync("../Emergentes/Mensajes.cshtml")
+        }
+        <div class="containers_vn panel panel-default">
+            <table class="tb_data table table-striped table-bordered table-hover">
+                <tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>Registro</th><th>Detalle</th></tr>
+                @foreach (var elemento in Model.Lista)
+                {
+                    <tr>
+                        <td>@elemento.Fecha</td>
+                        <td>@Model.NombreDe(elemento.Usuario)</td>
+                        <td>@elemento.Accion</td>
+                        <td>@elemento.Entidad</td>
+                        <td>@elemento.Registro</td>
+                        <td>@elemento.Detalle</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</form>
