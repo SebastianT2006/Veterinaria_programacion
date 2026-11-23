@@ -89,6 +89,11 @@ public interface IConexion
     {
         get; set;
     }
+    DbSet<roles>? roles { get; set; }
+    DbSet<usuarios>? usuarios { get; set; }
+    DbSet<auditorias>? auditorias { get; set; }
+    // Id del usuario que esta usando la aplicacion (lo envia la pagina). Sirve para la auditoria.
+    int UsuarioActual { get; set; }
     EntityEntry<T> Entry<T>(T entity) where T : class;
     int SaveChanges();
 }

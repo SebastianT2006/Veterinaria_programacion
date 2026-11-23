@@ -108,4 +108,48 @@ public class Conexion : DbContext, IConexion
     {
         get; set;
     }
+
+    public DbSet<roles>? roles { get; set; }
+    public DbSet<usuarios>? usuarios { get; set; }
+    public DbSet<auditorias>? auditorias { get; set; }
+
+    // Id del usuario que esta usando la aplicacion (la API lo recibe de la pagina)
+    public int UsuarioActual { get; set; }
+
+    // Guarda los cambios y, si se sabe quien los hizo, anota una fila por cada cambio en la tabla auditorias
+    public override int SaveChanges()
+    {
+        var cambios = new List<(object Entidad, string Accion)>();
+        foreach (var entrada in ChangeTracker.Entries())
+        {
+            if (entrada.Entity is auditorias)
+                continue;
+            if (entrada.State == EntityState.Added)
+                cambios.Add((entrada.Entity, "CREAR"));
+            else if (entrada.State == EntityState.Modified)
+                cambios.Add((entrada.Entity, "MODIFICAR"));
+            else if (entrada.State == EntityState.Deleted)
+                cambios.Add((entrada.Entity, "ELIMINAR"));
+        }
+
+        var resultado = base.SaveChanges();
+
+        if (UsuarioActual != 0 && cambios.Count > 0)
+        {
+            foreach (var cambio in cambios)
+            {
+                var id = cambio.Entidad.GetType().GetProperty("Id")?.GetValue(cambio.Entidad) as int?;
+                auditorias!.Add(new auditorias
+                {
+                    Usuario = UsuarioActual,
+                    Fecha = DateTime.Now,
+                    Accion = cambio.Accion,
+                    Entidad = cambio.Entidad.GetType().Name,
+                    Registro = id
+                });
+            }
+            base.SaveChanges();
+        }
+        return resultado;
+    }
 }
