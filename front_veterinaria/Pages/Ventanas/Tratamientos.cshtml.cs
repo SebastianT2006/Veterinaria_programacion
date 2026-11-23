@@ -7,9 +7,14 @@ namespace front_veterinaria.Pages.Ventanas;
 
 public class TratamientosModel : PageModel
 {
-    private readonly ItratamientosPresentacion presentacion; public TratamientosModel(ItratamientosPresentacion p)
+    private readonly ItratamientosPresentacion presentacion;
+    private readonly IproductosPresentacion productosPresentacion;
+    private readonly IanimalesPresentacion animalesPresentacion;
+    public TratamientosModel(ItratamientosPresentacion p, IanimalesPresentacion a, IproductosPresentacion prod)
     {
         presentacion = p;
+        productosPresentacion = prod;
+        animalesPresentacion = a;
         Filtro = new tratamientos();
     }
     [BindProperty] public List<tratamientos> Lista { get; set; } = new(); [BindProperty]
@@ -32,16 +37,21 @@ public class TratamientosModel : PageModel
     {
         get; set;
     }
+    public List<animales> Animales { get; set; } = new();
+    public List<productos> Productos { get; set; } = new();
     public void OnGet() => OnPostBtConsultar(); public void OnPostBtConsultar()
     {
         try
         {
+            Animales = animalesPresentacion.Consultar();
+            Productos = productosPresentacion.Consultar();
             Lista = presentacion.Buscar(Filtro ?? new tratamientos());
         }
         catch (Exception ex) { LogConversor.Log(ex, ViewData); }
     }
     public void OnPostBtNuevo()
     {
+        OnPostBtConsultar();
         Formulario = true;
         Actual = new tratamientos();
     }

@@ -7,9 +7,12 @@ namespace front_veterinaria.Pages.Ventanas;
 
 public class HistoriasClinicasModel : PageModel
 {
-    private readonly IhistoriasClinicasPresentacion presentacion; public HistoriasClinicasModel(IhistoriasClinicasPresentacion p)
+    private readonly IhistoriasClinicasPresentacion presentacion;
+    private readonly IanimalesPresentacion animalesPresentacion;
+    public HistoriasClinicasModel(IhistoriasClinicasPresentacion p, IanimalesPresentacion a)
     {
         presentacion = p;
+        animalesPresentacion = a;
         Filtro = new historiasClinicas();
     }
     [BindProperty] public List<historiasClinicas> Lista { get; set; } = new(); [BindProperty]
@@ -32,16 +35,19 @@ public class HistoriasClinicasModel : PageModel
     {
         get; set;
     }
+    public List<animales> Animales { get; set; } = new();
     public void OnGet() => OnPostBtConsultar(); public void OnPostBtConsultar()
     {
         try
         {
+            Animales = animalesPresentacion.Consultar();
             Lista = presentacion.Buscar(Filtro ?? new historiasClinicas());
         }
         catch (Exception ex) { LogConversor.Log(ex, ViewData); }
     }
     public void OnPostBtNuevo()
     {
+        OnPostBtConsultar();
         Formulario = true;
         Actual = new historiasClinicas();
     }

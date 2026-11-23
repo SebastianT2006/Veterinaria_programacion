@@ -7,9 +7,12 @@ namespace front_veterinaria.Pages.Ventanas;
 
 public class ComprasModel : PageModel
 {
-    private readonly IcomprasPresentacion presentacion; public ComprasModel(IcomprasPresentacion p)
+    private readonly IcomprasPresentacion presentacion;
+    private readonly IproveedoresPresentacion proveedoresPresentacion;
+    public ComprasModel(IcomprasPresentacion p, IproveedoresPresentacion prov)
     {
         presentacion = p;
+        proveedoresPresentacion = prov;
         Filtro = new compras();
     }
     [BindProperty] public List<compras> Lista { get; set; } = new(); [BindProperty]
@@ -32,16 +35,19 @@ public class ComprasModel : PageModel
     {
         get; set;
     }
+    public List<proveedores> Proveedores { get; set; } = new();
     public void OnGet() => OnPostBtConsultar(); public void OnPostBtConsultar()
     {
         try
         {
+            Proveedores = proveedoresPresentacion.Consultar();
             Lista = presentacion.Buscar(Filtro ?? new compras());
         }
         catch (Exception ex) { LogConversor.Log(ex, ViewData); }
     }
     public void OnPostBtNuevo()
     {
+        OnPostBtConsultar();
         Formulario = true;
         Actual = new compras();
     }
